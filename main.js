@@ -3,6 +3,10 @@ const currentWeather = document.getElementsByClassName("current-weather");
 
 let weatherData = [];
 
+let renderWeather = (res, iconUrl) => {
+
+}
+
 document.querySelector("#searchBtn").addEventListener("click", (e) => {
    e.preventDefault();
 
@@ -12,12 +16,20 @@ document.querySelector("#searchBtn").addEventListener("click", (e) => {
 })
 
 let fetchWeather = (city) => {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`
 
-  fetch(url, {
+  fetch(weatherUrl , {
     method: "GET",
     dataType: "json"
   })
-  .then(data => data.json())
-  .then(data => console.log(data))
+  .then(res => res.json())
+  .then(res => { 
+
+    const icon = res.weather[0].icon;
+
+    const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+    renderWeather(res, iconUrl);
+  })
 }
+
