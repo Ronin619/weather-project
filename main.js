@@ -1,19 +1,20 @@
 import { API_KEY } from "./config.js";
 
-let weatherData = [];
+let currentWeatherData = [];
+let fiveDayForecastData = [];
 
 let renderWeather = () => {
   document.querySelector('#currentWeather').replaceChildren();
 
-  for (let i = 0; i < weatherData.length; i++) {
+  for (let i = 0; i < currentWeatherData.length; i++) {
     const template = `
       <div class="weatherProfile">
-      <h2 class="temp">${Math.ceil(weatherData[i].temperature)}°</h2>
-      <h2 class="city">${weatherData[i].cityName}</h2>
-      <h2 class="condition">${weatherData[i].weatherCondition}</h2>
+      <h2 class="temp">${Math.ceil(currentWeatherData[i].temperature)}°</h2>
+      <h2 class="city">${currentWeatherData[i].cityName}</h2>
+      <h2 class="condition">${currentWeatherData[i].weatherCondition}</h2>
       </div>
       <div class="weatherIcon">
-        <img src=${weatherData[i].weatherIcon}>
+        <img src=${currentWeatherData[i].weatherIcon}>
       </div>
     `
     document.querySelector("#currentWeather").insertAdjacentHTML("beforeend", template);
@@ -26,12 +27,12 @@ document.querySelector("#searchBtn").addEventListener("click", (e) => {
 
   let search = document.querySelector("#inlineFormInputName").value;
 
-  fetchWeather(search);
+  fetchCurrentWeather(search);
 
   search = "";
 });
 
-let fetchWeather = (city) => {
+let fetchCurrentWeather = (city) => {
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`
 
   fetch(weatherUrl , {
@@ -44,8 +45,12 @@ let fetchWeather = (city) => {
   })
 }
 
+let fetchfiveDayWeather = (city) => {
+
+}
+
 let addWeather = (res) => {
-  weatherData = [];
+  currentWeatherData = [];
 
   const weatherProfile = {
     temperature: res.main.temp,
@@ -54,7 +59,7 @@ let addWeather = (res) => {
     weatherIcon: `https://openweathermap.org/img/wn/${res.weather[0].icon}@2x.png`
   }
 
-  weatherData.push(weatherProfile);
+  currentWeatherData.push(weatherProfile);
 
-  renderWeather(weatherData);
+  renderWeather(currentWeatherData);
 }
