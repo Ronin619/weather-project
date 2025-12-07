@@ -6,3 +6,16 @@ h1 {
 .row {
   margin-top: 60px;
 }
+
+#currentWeather {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap: 150px;
+  margin-top: 40px;
+}
+
+.city {
+  font-size: 30px;
+  font-weight: bold;
+}
