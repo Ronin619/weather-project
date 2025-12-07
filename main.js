@@ -3,7 +3,7 @@ import { API_KEY } from "./config.js";
 let currentWeatherData = [];
 let fiveDayForecastData = [];
 
-let renderWeather = () => {
+let renderCurrentWeather = () => {
   document.querySelector('#currentWeather').replaceChildren();
 
   for (let i = 0; i < currentWeatherData.length; i++) {
@@ -28,12 +28,13 @@ document.querySelector("#searchBtn").addEventListener("click", (e) => {
   let search = document.querySelector("#inlineFormInputName").value;
 
   fetchCurrentWeather(search);
+  fetchfiveDayWeather(search);
 
   search = "";
 });
 
 let fetchCurrentWeather = (city) => {
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`;
 
   fetch(weatherUrl , {
     method: "GET",
@@ -41,15 +42,24 @@ let fetchCurrentWeather = (city) => {
   })
   .then(res => res.json())
   .then(res => { 
-    addWeather(res);
+    addCurrentWeather(res);
   })
 }
 
 let fetchfiveDayWeather = (city) => {
+  const fiveDayWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=imperial`;
 
+  fetch(fiveDayWeatherUrl, {
+    method: "GET",
+    dataType: "json"
+  })
+  .then(res => res.json())
+  .then(res => {
+    console.log(res);
+  })
 }
 
-let addWeather = (res) => {
+let addCurrentWeather = (res) => {
   currentWeatherData = [];
 
   const weatherProfile = {
@@ -61,5 +71,5 @@ let addWeather = (res) => {
 
   currentWeatherData.push(weatherProfile);
 
-  renderWeather(currentWeatherData);
+  renderCurrentWeather(currentWeatherData);
 }
