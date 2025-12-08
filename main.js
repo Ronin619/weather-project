@@ -21,6 +21,24 @@ let renderCurrentWeather = () => {
   }
 }
 
+let renderFiveDayWeather = () => {
+  document.querySelector('.card-group').replaceChildren();
+
+  for( let i = 0; i < fiveDayForecastData.length; i++) {
+    let dayData = fiveDayForecastData[i];
+    const template = `
+      <div class="card border-dark">
+       <div class="card-body">
+        <p class="card-text text-center">${dayData.condition}</p>
+        <p class="card-text text-center">${dayData.temp}°</p>
+        <img src=${dayData.icon} class="card-img-top" alt="weather icon">
+        <p class="card-text text-center">${dayData.day}</p>
+        </div>
+      </div>
+   `
+   document.querySelector(".card-group").insertAdjacentHTML("beforeend", template);
+  }
+}
 
 document.querySelector("#searchBtn").addEventListener("click", (e) => {
    e.preventDefault();
@@ -30,7 +48,7 @@ document.querySelector("#searchBtn").addEventListener("click", (e) => {
   fetchCurrentWeather(search);
   fetchfiveDayWeather(search);
 
-  search = "";
+  document.querySelector("#inlineFormInputName").value = "";
 });
 
 let fetchCurrentWeather = (city) => {
@@ -55,8 +73,38 @@ let fetchfiveDayWeather = (city) => {
   })
   .then(res => res.json())
   .then(res => {
-    console.log(res);
+
+    addFiveDayWeather(res);
   })
+}
+
+let addFiveDayWeather = (data) => {
+  fiveDayForecastData = [];
+
+  for (let i = 0; i < data.list.length; i += 8) {
+      const days = data.list.slice(i, i + 8);
+
+      const temps = days.map(value => value.main.temp);
+      const avgTemp = temps.reduce((sum, t) => sum + t, 0)/temps.length;
+      const roundedTemp = Math.ceil(avgTemp);
+
+      const date = new Date(days[0].dt_txt);
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const dayOfWeek = dayNames[date.getDay()];
+
+      const icon = `https://openweathermap.org/img/wn/${days[0].weather[0].icon}@2x.png`;
+
+      const condition = days[0].weather[0].main;
+
+      fiveDayForecastData.push({
+          condition: condition,
+          temp: roundedTemp,
+          icon: icon,
+          day: dayOfWeek,
+        });
+    }
+
+    renderFiveDayWeather(fiveDayForecastData);
 }
 
 let addCurrentWeather = (res) => {
@@ -73,3 +121,5 @@ let addCurrentWeather = (res) => {
 
   renderCurrentWeather(currentWeatherData);
 }
+
+
